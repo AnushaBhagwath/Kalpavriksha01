@@ -110,6 +110,50 @@ void update_user() {
 }
 
 
+void delete_user() {
+    FILE *file = fopen(FILENAME, "r");
+    if (file == NULL) {
+        printf("No users found.\n");
+        return;
+    }
+
+    char temp_filename[] = "temp.txt";
+    FILE *tempfile = fopen(temp_filename, "w");
+    if (tempfile == NULL) {
+        printf("Error: Could not open temporary file.\n");
+        fclose(file);
+        return;
+    }
+
+    char targetid[20];
+    printf("Enter the ID of the user to delete: ");
+    scanf("%s", targetid);
+
+    char details[MAX_LINE];
+    int present = 0;
+    while (fgets(details, sizeof(details), file)) {
+        User newuser;
+        sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
+
+        if (strcmp(newuser.id, targetid) != 0) {
+            fprintf(tempfile, "%s,%s,%d\n", newuser.id, newuser.name, newuser.age);
+        } else {
+            present = 1;
+        }
+    }
+
+    fclose(file);
+    fclose(tempfile);
+
+    if (present) {
+        remove(FILENAME);
+        rename(temp_filename, FILENAME);
+        printf("User deleted successfully!\n");
+    } else {
+        remove(temp_filename);
+        printf("Error: User not found.\n");
+    }
+}
 
 
 int main() {
