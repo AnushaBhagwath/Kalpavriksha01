@@ -5,13 +5,13 @@
 
 
 int evaluate(const char *expression, int *error) {
-    char operators[100];
-    int values[100];
-    int opTop = -1, valTop = -1;
+    char ops[100];
+    int topop = -1, topval = -1;
+    int vals[100];
 
-    int i = 0, len = strlen(expression);
+    int i = 0, length = strlen(expression);
 
-    while (i < len) {
+    while (i < length) {
         if (isspace(expression[i])) {
             i++;
             continue;
@@ -19,11 +19,38 @@ int evaluate(const char *expression, int *error) {
 
         if (isdigit(expression[i])) {
             int value = 0;
-            while (i < len && isdigit(expression[i])) {
+            while (i < length && isdigit(expression[i])) {
                 value = value * 10 + (expression[i] - '0');
                 i++;
             }
-            values[++valTop] = value;
+            vals[++topval] = value;
+        }
+
+        else if (strchr("+-*/", expression[i])) {
+            while (topop >= 0 && 
+                   ((ops[topop] == '*' || ops[topop] == '/') ||
+                   (expression[i] != '*' && expression[i] != '/' && (ops[topop] == '+' || ops[topop] == '-')))) {
+                
+                char op = ops[topop--];
+                if (topval < 1) {
+                    *error = 1;
+                    return 0;
+                }
+                int b = vals[topval--];
+                int a = vals[topval--];
+                
+                if (op == '/' && b == 0) {
+                    *error = 2;
+                    return 0;
+                }
+                
+                vals[++topval] = (op == '+') ? (a + b) :
+                                   (op == '-') ? (a - b) :
+                                   (op == '*') ? (a * b) :
+                                   (a / b);
+            }
+            ops[++topop] = expression[i];
+            i++;
         }
     }
         i++;
