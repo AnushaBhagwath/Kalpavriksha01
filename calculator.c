@@ -58,8 +58,27 @@ int evaluate(const char *expression, int *error) {
             return 0;
         }
     }
-        i++;
-    return 0; 
+
+    while (topop >= 0) {
+        char op = ops[topop--];
+        if (topval < 1) {
+            *error = 1;
+            return 0;
+        }
+        int b = vals[topval--];
+        int a = vals[topval--];
+        
+        if (op == '/' && b == 0) {
+            *error = 2;
+            return 0;
+        }
+        
+        vals[++topval] = (op == '+') ? (a + b) :
+                           (op == '-') ? (a - b) :
+                           (op == '*') ? (a * b) :
+                           (a / b);
+    }
+    return vals[topval]; 
 }
 
 int main() {
