@@ -52,6 +52,11 @@ int evaluate(const char *expression, int *error) {
             ops[++topop] = expression[i];
             i++;
         }
+
+        else {
+            *error = 3;
+            return 0;
+        }
     }
         i++;
     return 0; 
