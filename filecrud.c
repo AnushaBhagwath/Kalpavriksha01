@@ -14,8 +14,30 @@ typedef struct {
 void create_file() {
     FILE *file = fopen(FILENAME, "a");
     if (file != NULL) {
-        fclose(file);  // Create the file if it doesn't exist
+        fclose(file);
     }
+}
+
+void add_user() {
+    User newuser;
+    FILE *file = fopen(FILENAME, "a");
+
+    if (file == NULL) {
+        printf("Error: Could not open file.\n");
+        return;
+    }
+
+    printf("Enter User ID: ");
+    scanf("%s", newuser.id);
+    printf("Enter Name: ");
+    scanf(" %[^\n]", newuser.name);
+    printf("Enter Age: ");
+    scanf("%d", &newuser.age);
+
+    fprintf(file, "%s,%s,%d\n", newuser.id, newuser.name, newuser.age);
+    fclose(file);
+
+    printf("User added successfully!\n");
 }
 
 int main() {
