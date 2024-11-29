@@ -40,6 +40,29 @@ void add_user() {
     printf("User added successfully!\n");
 }
 
+void display_users() {
+    FILE *file = fopen(FILENAME, "r");
+    if (file == NULL) {
+        printf("No users found.\n");
+        return;
+    }
+
+    printf("\n%-10s %-20s %-5s\n", "ID", "Name", "Age");
+    printf("-------------------------------\n");
+
+    char details[MAX_LINE];
+    while (fgets(details, sizeof(details), file)) {
+        User newuser;
+        sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
+        printf("%-10s %-20s %-5d\n", newuser.id, newuser.name, newuser.age);
+    }
+
+    fclose(file);
+}
+
+
+
+
 int main() {
     int choice;
 
