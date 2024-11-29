@@ -61,6 +61,55 @@ void display_users() {
 }
 
 
+void update_user() {
+    FILE *file = fopen(FILENAME, "r");
+    if (file == NULL) {
+        printf("No users found.\n");
+        return;
+    }
+
+    char temp_filename[] = "temp.txt";
+    FILE *temp_file = fopen(temp_filename, "w");
+    if (temp_file == NULL) {
+        printf("Error: Could not open temporary file.\n");
+        fclose(file);
+        return;
+    }
+
+    char targetid[20];
+    printf("Enter the ID of the user to update: ");
+    scanf("%s", targetid);
+
+    char details[MAX_LINE];
+    int present = 0;
+    while (fgets(details, sizeof(details), file)) {
+        User newuser;
+        sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
+
+        if (strcmp(newuser.id, targetid) == 0) {
+            present = 1;
+            printf("Enter new Name: ");
+            scanf(" %[^\n]", newuser.name);
+            printf("Enter new Age: ");
+            scanf("%d", &newuser.age);
+        }
+        fprintf(temp_file, "%s,%s,%d\n", newuser.id, newuser.name, newuser.age);
+    }
+
+    fclose(file);
+    fclose(temp_file);
+
+    if (present) {
+        remove(FILENAME);
+        rename(temp_filename, FILENAME);
+        printf("User updated successfully!\n");
+    } else {
+        remove(temp_filename);
+        printf("Error: User not found.\n");
+    }
+}
+
+
 
 
 int main() {
