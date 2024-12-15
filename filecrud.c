@@ -111,11 +111,34 @@ void update_user() {
 
         if (custom_strcmp(newuser.id, targetid) == 0) {
             present = 1;  // Set flag if the user is found
-            // Prompt for updated details
-            printf("Enter new Name: ");
-            scanf(" %[^\n]", newuser.name);
-            printf("Enter new Age: ");
-            scanf("%d", &newuser.age);
+            int update_choice;
+            // Prompt for which part to update
+            printf("User found! What would you like to update?\n");
+            printf("1. Name\n");
+            printf("2. Age\n");
+            printf("3. Both Name and Age\n");
+            printf("Enter your choice (1/2/3): ");
+            scanf("%d", &update_choice);
+
+            switch (update_choice) {
+                case 1:  // Update only Name
+                    printf("Enter new Name: ");
+                    scanf(" %[^\n]", newuser.name);
+                    break;
+                case 2:  // Update only Age
+                    printf("Enter new Age: ");
+                    scanf("%d", &newuser.age);
+                    break;
+                case 3:  // Update both Name and Age
+                    printf("Enter new Name: ");
+                    scanf(" %[^\n]", newuser.name);
+                    printf("Enter new Age: ");
+                    scanf("%d", &newuser.age);
+                    break;
+                default:
+                    printf("Invalid choice. No updates made.\n");
+                    break;
+            }
         }
         // Write the (possibly updated) user data to the temporary file
         fprintf(temp_file, "%s,%s,%d\n", newuser.id, newuser.name, newuser.age);
