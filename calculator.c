@@ -10,7 +10,7 @@
 #define MAX_STACK_SIZE 100
 
 // Helper function to calculate string length
-int string_length(const char *str) {
+int get_string_length(const char *str) {
     int length = 0;
     while (str[length] != '\0') {
         length++;
@@ -48,7 +48,7 @@ int evaluate_expression(const char *expression, int *error) {
     int operands[MAX_STACK_SIZE];
     int operator_top = -1, operand_top = -1;
 
-    int i = 0, length = string_length(expression);
+    int i = 0, length = get_string_length(expression);
 
     while (i < length) {
         // Skip spaces
