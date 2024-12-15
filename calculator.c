@@ -18,6 +18,12 @@ int get_string_length(const char *str) {
     return length;
 }
 
+// Helper function to check for whitespace
+int is_whitespace(char c) {
+    return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f');
+}
+
+
 // Helper function to apply an operator
 int apply_operator(char operator, int a, int b, int *error) {
     if (operator == '/' && b == 0) {
@@ -47,12 +53,14 @@ int evaluate_expression(const char *expression, int *error) {
     char operators[MAX_STACK_SIZE];
     int operands[MAX_STACK_SIZE];
     int operator_top = -1, operand_top = -1;
+    int result = 0;  // Single return value
+    *error = 0;      // Reset the error initially
 
     int i = 0, length = get_string_length(expression);
 
     while (i < length) {
         // Skip spaces
-        if (isspace(expression[i])) {
+        if (is_whitespace(expression[i])) {
             i++;
             continue;
         }
@@ -66,7 +74,8 @@ int evaluate_expression(const char *expression, int *error) {
             }
             if (operand_top >= MAX_STACK_SIZE - 1) {
                 *error = ERROR_INVALID_EXPRESSION;
-                return 0;
+                result = 0;
+                break;
             }
             operands[++operand_top] = value;
         }
@@ -76,13 +85,17 @@ int evaluate_expression(const char *expression, int *error) {
                    operator_precedence(operators[operator_top]) >= operator_precedence(expression[i])) {
                 if (operand_top < 1) {
                     *error = ERROR_INVALID_EXPRESSION;
-                    return 0;
+                    result = 0;
+                    break;
                 }
                 char op = operators[operator_top--];
                 int b = operands[operand_top--];
                 int a = operands[operand_top--];
                 operands[++operand_top] = apply_operator(op, a, b, error);
-                if (*error) return 0;
+                if (*error) {
+                    result = 0;
+                    break;
+                }
             }
             operators[++operator_top] = expression[i];
             i++;
@@ -90,24 +103,33 @@ int evaluate_expression(const char *expression, int *error) {
         // Invalid character
         else {
             *error = ERROR_INVALID_EXPRESSION;
-            return 0;
+            result = 0;
+            break;
         }
     }
 
     // Process remaining operators
-    while (operator_top >= 0) {
+    while (*error == 0 && operator_top >= 0) {
         if (operand_top < 1) {
             *error = ERROR_INVALID_EXPRESSION;
-            return 0;
+            result = 0;
+            break;
         }
         char op = operators[operator_top--];
         int b = operands[operand_top--];
         int a = operands[operand_top--];
         operands[++operand_top] = apply_operator(op, a, b, error);
-        if (*error) return 0;
+        if (*error) {
+            result = 0;
+            break;
+        }
     }
 
-    return operands[operand_top];
+    if (*error == 0) {
+        result = operands[operand_top];
+    }
+
+    return result;
 }
 
 // Main function
