@@ -31,29 +31,53 @@ void create_file() {
     }
 }
 
-// Function to add a new user to the file
-void add_user() {
-    User newuser;  // Declare a new user variable
-    FILE *file = fopen(FILENAME, "a");  // Open file in append mode to add a new user
-
+// Function to check if the ID already exists in the file
+int check_id_exists(const char *id) {
+    FILE *file = fopen(FILENAME, "r");
     if (file == NULL) {
-        printf("Error: Could not open file.\n");
+        return 0;  // File doesn't exist or is empty, so ID doesn't exist
+    }
+
+    char details[MAX_LINE];
+    while (fgets(details, sizeof(details), file)) {
+        User existing_user;
+        sscanf(details, "%[^,],%[^,],%d", existing_user.id, existing_user.name, &existing_user.age);
+        if (custom_strcmp(existing_user.id, id) == 0) {
+            fclose(file);
+            return 1;  // ID exists
+        }
+    }
+    fclose(file);
+    return 0;  // ID doesn't exist
+}
+
+// Function to add a new user
+void add_user() {
+    FILE *file = fopen(FILENAME, "a");
+    if (file == NULL) {
+        printf("Error opening file.\n");
         return;
     }
 
-    // Prompt user for input
-    printf("Enter User ID: ");
-    scanf("%s", newuser.id);
+    User new_user;
+    printf("Enter ID: ");
+    scanf("%s", new_user.id);
+
+    // Check if the ID already exists
+    if (check_id_exists(new_user.id)) {
+        printf("Error: User ID already exists.\n");
+        fclose(file);
+        return;
+    }
+
     printf("Enter Name: ");
-    scanf(" %[^\n]", newuser.name);  // To capture spaces in name
+    scanf(" %[^\n]", new_user.name);
     printf("Enter Age: ");
-    scanf("%d", &newuser.age);
+    scanf("%d", &new_user.age);
 
-    // Write the new user data into the file
-    fprintf(file, "%s,%s,%d\n", newuser.id, newuser.name, newuser.age);
-    fclose(file);  // Close the file
-
+    fprintf(file, "%s,%s,%d\n", new_user.id, new_user.name, new_user.age);
     printf("User added successfully!\n");
+    fclose(file);
 }
 
 // Function to display all users in the file
