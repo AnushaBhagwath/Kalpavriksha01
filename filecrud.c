@@ -226,26 +226,34 @@ int main() {
         printf("4. Delete User\n");
         printf("5. Exit\n");
         printf("Enter your choice: ");
-        scanf("%d", &choice);
+        
+        // Input validation: check if the input is an integer
+        if (scanf("%d", &choice) != 1) {
+            // If the input is not a valid integer, clear the input buffer
+            while (getchar() != '\n');  // Clear the invalid input
+            printf("Invalid input! Please enter a number.\n");
+            continue;  // Skip the rest of the loop and ask for input again
+        }
 
+        // Handle menu choices
         switch (choice) {
             case 1:
-                add_user();  // Call function to add a user
+                add_user();
                 break;
             case 2:
-                display_users();  // Call function to display all users
+                display_users();
                 break;
             case 3:
-                update_user();  // Call function to update a user
+                update_user();
                 break;
             case 4:
-                delete_user();  // Call function to delete a user
+                delete_user();
                 break;
             case 5:
-                printf("Exiting program.\n");
-                return 0;  // Exit the program with a single return statement
+                printf("Exiting the program.\n");
+                return 0;  // Exit the program
             default:
-                printf("Invalid choice. Please try again.\n");
+                printf("Invalid choice! Please select a valid option.\n");
         }
     }
 
