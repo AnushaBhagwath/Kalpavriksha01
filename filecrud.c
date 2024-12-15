@@ -12,6 +12,16 @@ typedef struct {
     int age;
 } User;
 
+
+// Custom string comparison function
+int custom_strcmp(const char *str1, const char *str2) {
+    while (*str1 && (*str1 == *str2)) {
+        str1++;
+        str2++;
+    }
+    return (unsigned char)*str1 - (unsigned char)*str2;
+}
+
 // Function to create the file if it doesn't exist
 void create_file() {
     // Open file in append mode, create if doesn't exist
@@ -99,7 +109,7 @@ void update_user() {
         // Parse each line into a User structure
         sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
 
-        if (strcmp(newuser.id, targetid) == 0) {
+        if (custom_strcmp(newuser.id, targetid) == 0) {
             present = 1;  // Set flag if the user is found
             // Prompt for updated details
             printf("Enter new Name: ");
@@ -155,7 +165,7 @@ void delete_user() {
         // Parse each line into a User structure
         sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
 
-        if (strcmp(newuser.id, targetid) != 0) {
+        if (custom_strcmp(newuser.id, targetid) != 0) {
             // If user is not the one to delete, write to the temporary file
             fprintf(tempfile, "%s,%s,%d\n", newuser.id, newuser.name, newuser.age);
         } else {
