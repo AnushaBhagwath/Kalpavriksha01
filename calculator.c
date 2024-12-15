@@ -1,104 +1,141 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<ctype.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 
+// Error codes
+#define ERROR_INVALID_EXPRESSION 1
+#define ERROR_DIVISION_BY_ZERO 2
+#define ERROR_UNKNOWN 3
 
-int evaluate(const char *expression, int *error) {
-    char ops[100];
-    int topop = -1, topval = -1;
-    int vals[100];
+#define MAX_STACK_SIZE 100
 
-    int i = 0, length = strlen(expression);
+// Helper function to calculate string length
+int string_length(const char *str) {
+    int length = 0;
+    while (str[length] != '\0') {
+        length++;
+    }
+    return length;
+}
+
+// Helper function to apply an operator
+int apply_operator(char operator, int a, int b, int *error) {
+    if (operator == '/' && b == 0) {
+        *error = ERROR_DIVISION_BY_ZERO;
+        return 0;
+    }
+    switch (operator) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return a / b;
+        default:
+            *error = ERROR_UNKNOWN;
+            return 0;
+    }
+}
+
+// Helper function to check operator precedence
+int operator_precedence(char operator) {
+    if (operator == '+' || operator == '-') return 1;
+    if (operator == '*' || operator == '/') return 2;
+    return 0;
+}
+
+// Evaluate the expression
+int evaluate_expression(const char *expression, int *error) {
+    char operators[MAX_STACK_SIZE];
+    int operands[MAX_STACK_SIZE];
+    int operator_top = -1, operand_top = -1;
+
+    int i = 0, length = string_length(expression);
 
     while (i < length) {
+        // Skip spaces
         if (isspace(expression[i])) {
             i++;
             continue;
         }
 
+        // Process numbers
         if (isdigit(expression[i])) {
             int value = 0;
             while (i < length && isdigit(expression[i])) {
                 value = value * 10 + (expression[i] - '0');
                 i++;
             }
-            vals[++topval] = value;
-        }
-
-        else if (strchr("+-*/", expression[i])) {
-            while (topop >= 0 && 
-                   ((ops[topop] == '*' || ops[topop] == '/') ||
-                   (expression[i] != '*' && expression[i] != '/' && (ops[topop] == '+' || ops[topop] == '-')))) {
-                
-                char op = ops[topop--];
-                if (topval < 1) {
-                    *error = 1;
-                    return 0;
-                }
-                int b = vals[topval--];
-                int a = vals[topval--];
-                
-                if (op == '/' && b == 0) {
-                    *error = 2;
-                    return 0;
-                }
-                
-                vals[++topval] = (op == '+') ? (a + b) :
-                                   (op == '-') ? (a - b) :
-                                   (op == '*') ? (a * b) :
-                                   (a / b);
+            if (operand_top >= MAX_STACK_SIZE - 1) {
+                *error = ERROR_INVALID_EXPRESSION;
+                return 0;
             }
-            ops[++topop] = expression[i];
+            operands[++operand_top] = value;
+        }
+        // Process operators
+        else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/') {
+            while (operator_top >= 0 && 
+                   operator_precedence(operators[operator_top]) >= operator_precedence(expression[i])) {
+                if (operand_top < 1) {
+                    *error = ERROR_INVALID_EXPRESSION;
+                    return 0;
+                }
+                char op = operators[operator_top--];
+                int b = operands[operand_top--];
+                int a = operands[operand_top--];
+                operands[++operand_top] = apply_operator(op, a, b, error);
+                if (*error) return 0;
+            }
+            operators[++operator_top] = expression[i];
             i++;
         }
-
+        // Invalid character
         else {
-            *error = 3;
+            *error = ERROR_INVALID_EXPRESSION;
             return 0;
         }
     }
 
-    while (topop >= 0) {
-        char op = ops[topop--];
-        if (topval < 1) {
-            *error = 1;
+    // Process remaining operators
+    while (operator_top >= 0) {
+        if (operand_top < 1) {
+            *error = ERROR_INVALID_EXPRESSION;
             return 0;
         }
-        int b = vals[topval--];
-        int a = vals[topval--];
-        
-        if (op == '/' && b == 0) {
-            *error = 2;
-            return 0;
-        }
-        
-        vals[++topval] = (op == '+') ? (a + b) :
-                           (op == '-') ? (a - b) :
-                           (op == '*') ? (a * b) :
-                           (a / b);
+        char op = operators[operator_top--];
+        int b = operands[operand_top--];
+        int a = operands[operand_top--];
+        operands[++operand_top] = apply_operator(op, a, b, error);
+        if (*error) return 0;
     }
-    return vals[topval]; 
+
+    return operands[operand_top];
 }
 
+// Main function
 int main() {
     char expression[1000];
     printf("Enter the expression: ");
     fgets(expression, sizeof(expression), stdin);
 
-    expression[strcspn(expression, "\n")] = 0;
+    // Remove newline character if present
+    for (int i = 0; expression[i] != '\0'; i++) {
+        if (expression[i] == '\n') {
+            expression[i] = '\0';
+            break;
+        }
+    }
 
     int error = 0;
-    int ans = evaluate(expression, &error);
+    int result = evaluate_expression(expression, &error);
 
-    if (error == 1) {
+    if (error == ERROR_INVALID_EXPRESSION) {
         printf("Error: Invalid expression.\n");
-    } else if (error == 2) {
+    } else if (error == ERROR_DIVISION_BY_ZERO) {
         printf("Error: Division by zero.\n");
-    } else if (error == 3) {
-        printf("Error: Invalid expression.\n");
+    } else if (error == ERROR_UNKNOWN) {
+        printf("Error: Unknown error.\n");
     } else {
-        printf("%d\n", ans);
+        printf("Result: %d\n", result);
     }
+
     return 0;
 }
