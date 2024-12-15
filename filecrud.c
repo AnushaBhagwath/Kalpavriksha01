@@ -24,8 +24,7 @@ void create_file() {
 // Function to add a new user to the file
 void add_user() {
     User newuser;  // Declare a new user variable
-    // Open file in append mode to add a new user
-    FILE *file = fopen(FILENAME, "a");
+    FILE *file = fopen(FILENAME, "a");  // Open file in append mode to add a new user
 
     if (file == NULL) {
         printf("Error: Could not open file.\n");
@@ -115,8 +114,8 @@ void update_user() {
     fclose(file);
     fclose(temp_file);
 
+    // If user was updated, replace the original file with the temporary file
     if (present) {
-        // If user was updated, replace the original file with the temporary file
         remove(FILENAME);
         rename(temp_filename, FILENAME);
         printf("User updated successfully!\n");
@@ -167,8 +166,8 @@ void delete_user() {
     fclose(file);
     fclose(tempfile);
 
+    // If user was deleted, replace the original file with the temporary file
     if (present) {
-        // If user was deleted, replace the original file with the temporary file
         remove(FILENAME);
         rename(temp_filename, FILENAME);
         printf("User deleted successfully!\n");
@@ -211,7 +210,7 @@ int main() {
                 break;
             case 5:
                 printf("Exiting program.\n");
-                exit(0);  // Exit the program
+                return 0;  // Exit the program with a single return statement
             default:
                 printf("Invalid choice. Please try again.\n");
         }
