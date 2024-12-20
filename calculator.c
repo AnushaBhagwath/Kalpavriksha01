@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+<<<<<<< Updated upstream
 // Error codes
+=======
+// Error code
+>>>>>>> Stashed changes
 #define ERROR_INVALID_EXPRESSION 1
 #define ERROR_DIVISION_BY_ZERO 2
 #define ERROR_UNKNOWN 3
@@ -26,11 +30,16 @@ int is_whitespace(char c) {
 
 // Helper function to apply an operator
 int apply_operator(char operator, int a, int b, int *error) {
+<<<<<<< Updated upstream
+=======
+    int result=0;
+>>>>>>> Stashed changes
     if (operator == '/' && b == 0) {
         *error = ERROR_DIVISION_BY_ZERO;
         return 0;
     }
     switch (operator) {
+<<<<<<< Updated upstream
         case '+': return a + b;
         case '-': return a - b;
         case '*': return a * b;
@@ -39,6 +48,17 @@ int apply_operator(char operator, int a, int b, int *error) {
             *error = ERROR_UNKNOWN;
             return 0;
     }
+=======
+        case '+': result= a + b;break;
+        case '-': result= a - b;break;
+        case '*': result= a * b;break;
+        case '/': result= a / b;break;
+        default:
+            *error = ERROR_UNKNOWN;
+            break;
+    }
+    return result;
+>>>>>>> Stashed changes
 }
 
 // Helper function to check operator precedence
@@ -133,6 +153,7 @@ int evaluate_expression(const char *expression, int *error) {
 }
 
 // Main function
+<<<<<<< Updated upstream
 int main() {
     char expression[1000];
     printf("Enter the expression: ");
@@ -162,3 +183,44 @@ int main() {
     return 0;
 }
 // Intentionally left blank
+=======
+// Main function
+int main() {
+    char expression[1000];
+    char choice;
+
+    do {
+        printf("Enter the expression: ");
+        fgets(expression, sizeof(expression), stdin);
+
+        // Remove newline character if present
+        for (int i = 0; expression[i] != '\0'; i++) {
+            if (expression[i] == '\n') {
+                expression[i] = '\0';
+                break;
+            }
+        }
+
+        int error = 0;
+        int result = evaluate_expression(expression, &error);
+
+        if (error == ERROR_INVALID_EXPRESSION) {
+            printf("Error: Invalid expression.\n");
+        } else if (error == ERROR_DIVISION_BY_ZERO) {
+            printf("Error: Division by zero.\n");
+        } else if (error == ERROR_UNKNOWN) {
+            printf("Error: Unknown error.\n");
+        } else {
+            printf("Result: %d\n", result);
+        }
+
+        printf("Do you want to evaluate another expression? (y/n): ");
+        choice = getchar();
+        getchar(); // To consume the newline character left in the buffer
+
+    } while (choice == 'y' || choice == 'Y');
+
+    printf("Exiting the program. Goodbye!\n");
+    return 0;
+}
+>>>>>>> Stashed changes
