@@ -13,7 +13,7 @@ typedef struct {
 } User;
 
 
-// Custom string comparison function
+
 int custom_strcmp(const char *str1, const char *str2) {
     while (*str1 && (*str1 == *str2)) {
         str1++;
@@ -31,7 +31,7 @@ void create_file() {
     }
 }
 
-// Function to check if the ID already exists in the file
+
 int check_id_exists(const char *id) {
     FILE *file = fopen(FILENAME, "r");
     if (file == NULL) {
@@ -44,14 +44,14 @@ int check_id_exists(const char *id) {
         sscanf(details, "%[^,],%[^,],%d", existing_user.id, existing_user.name, &existing_user.age);
         if (custom_strcmp(existing_user.id, id) == 0) {
             fclose(file);
-            return 1;  // ID exists
+            return 1;  // Id exits
         }
     }
     fclose(file);
     return 0;  // ID doesn't exist
 }
 
-// Function to add a new user
+
 void add_user() {
     FILE *file = fopen(FILENAME, "a");
     if (file == NULL) {
@@ -63,7 +63,7 @@ void add_user() {
     printf("Enter ID: ");
     scanf("%s", new_user.id);
 
-    // Check if the ID already exists
+    
     if (check_id_exists(new_user.id)) {
         printf("Error: User ID already exists.\n");
         fclose(file);
@@ -80,24 +80,24 @@ void add_user() {
     fclose(file);
 }
 
-// Function to display all users in the file
+
 void display_users() {
-    FILE *file = fopen(FILENAME, "r");  // Open file in read mode
+    FILE *file = fopen(FILENAME, "r");  
     if (file == NULL) {
         printf("No users found.\n");
         return;
     }
 
-    // Print column headers for better formatting
+    
     printf("\n%-10s %-20s %-5s\n", "ID", "Name", "Age");
     printf("-------------------------------\n");
 
-    char details[MAX_LINE];  // Buffer to store each line read from file
-    while (fgets(details, sizeof(details), file)) {  // Read each line
+    char details[MAX_LINE]; 
+    while (fgets(details, sizeof(details), file)) {  
         User newuser;
         
         sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
-        // Display the user details in formatted columns
+       
         printf("%-10s %-20s %-5d\n", newuser.id, newuser.name, newuser.age);
     }
 
@@ -125,11 +125,11 @@ void update_user() {
     printf("Enter the ID of the user to update: ");
     scanf("%s", targetid);
 
-    char details[MAX_LINE];  // Buffer for each line in the file
+    char details[MAX_LINE];  
     int present = 0;  
     while (fgets(details, sizeof(details), file)) {
         User newuser;
-        // Parse each line into a User structure
+        
         sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
 
         if (custom_strcmp(newuser.id, targetid) == 0) {
@@ -170,7 +170,7 @@ void update_user() {
     fclose(file);
     fclose(temp_file);
 
-    // If user was updated, replace the original file with the temporary file
+    
     if (present) {
         remove(FILENAME);
         rename(temp_filename, FILENAME);
@@ -217,7 +217,7 @@ void delete_user() {
         } 
         else 
         {
-            present = 1;  // Set flag if user is found
+            present = 1;  
         }
     }
 
@@ -238,14 +238,14 @@ void delete_user() {
     }
 }
 
-// Main function to drive the program
+
 int main() {
     int choice;
 
     create_file();  
 
     while (1) {
-        // Menu for user to choose an option
+        
         printf("\nUser Management System\n");
         printf("1. Add User\n");
         printf("2. Display Users\n");
@@ -278,7 +278,7 @@ int main() {
                 break;
             case 5:
                 printf("Exiting the program.\n");
-                return 0;  // Exit the program
+                return 0;  
             default:
                 printf("Invalid choice! Please select a valid option.\n");
         }
