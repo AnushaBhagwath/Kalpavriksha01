@@ -22,12 +22,12 @@ int custom_strcmp(const char *str1, const char *str2) {
     return (unsigned char)*str1 - (unsigned char)*str2;
 }
 
-// Function to create the file if it doesn't exist
+
 void create_file() {
-    // Open file in append mode, create if doesn't exist
+    
     FILE *file = fopen(FILENAME, "a");
     if (file != NULL) {
-        fclose(file);  // Close the file after ensuring it exists
+        fclose(file);  
     }
 }
 
@@ -35,7 +35,7 @@ void create_file() {
 int check_id_exists(const char *id) {
     FILE *file = fopen(FILENAME, "r");
     if (file == NULL) {
-        return 0;  // File doesn't exist or is empty, so ID doesn't exist
+        return 0; 
     }
 
     char details[MAX_LINE];
@@ -95,48 +95,47 @@ void display_users() {
     char details[MAX_LINE];  // Buffer to store each line read from file
     while (fgets(details, sizeof(details), file)) {  // Read each line
         User newuser;
-        // Parse the line into a User structure
+        
         sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
         // Display the user details in formatted columns
         printf("%-10s %-20s %-5d\n", newuser.id, newuser.name, newuser.age);
     }
 
-    fclose(file);  // Close the file
+    fclose(file);  
 }
 
-// Function to update a user's information based on ID
 void update_user() {
-    FILE *file = fopen(FILENAME, "r");  // Open file in read mode
+    FILE *file = fopen(FILENAME, "r");  
     if (file == NULL) {
         printf("No users found.\n");
         return;
     }
 
-    // Temporary file for storing updated data
+    
     char temp_filename[] = "temp.txt";
     FILE *temp_file = fopen(temp_filename, "w");
     if (temp_file == NULL) {
-        printf("Error: Could not open temporary file.\n");
+        
         fclose(file);
         return;
     }
 
     char targetid[20];
-    // Prompt for the ID of the user to update
+    
     printf("Enter the ID of the user to update: ");
     scanf("%s", targetid);
 
     char details[MAX_LINE];  // Buffer for each line in the file
-    int present = 0;  // Flag to check if user was found
+    int present = 0;  
     while (fgets(details, sizeof(details), file)) {
         User newuser;
         // Parse each line into a User structure
         sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
 
         if (custom_strcmp(newuser.id, targetid) == 0) {
-            present = 1;  // Set flag if the user is found
+            present = 1;  
             int update_choice;
-            // Prompt for which part to update
+            
             printf("User found! What would you like to update?\n");
             printf("1. Name\n");
             printf("2. Age\n");
@@ -164,7 +163,7 @@ void update_user() {
                     break;
             }
         }
-        // Write the (possibly updated) user data to the temporary file
+        
         fprintf(temp_file, "%s,%s,%d\n", newuser.id, newuser.name, newuser.age);
     }
 
@@ -177,21 +176,21 @@ void update_user() {
         rename(temp_filename, FILENAME);
         printf("User updated successfully!\n");
     } else {
-        // If user wasn't found, remove the temporary file
+       
         remove(temp_filename);
         printf("Error: User not found.\n");
     }
 }
 
-// Function to delete a user from the file based on ID
+
 void delete_user() {
-    FILE *file = fopen(FILENAME, "r");  // Open file in read mode
+    FILE *file = fopen(FILENAME, "r");  
     if (file == NULL) {
         printf("No users found.\n");
         return;
     }
 
-    // Temporary file for storing users who are not deleted
+    
     char temp_filename[] = "temp.txt";
     FILE *tempfile = fopen(temp_filename, "w");
     if (tempfile == NULL) {
@@ -201,21 +200,23 @@ void delete_user() {
     }
 
     char targetid[20];
-    // Prompt for the ID of the user to delete
+    
     printf("Enter the ID of the user to delete: ");
     scanf("%s", targetid);
 
-    char details[MAX_LINE];  // Buffer for each line in the file
-    int present = 0;  // Flag to check if user was found
+    char details[MAX_LINE];  
+    int present = 0;  
     while (fgets(details, sizeof(details), file)) {
         User newuser;
-        // Parse each line into a User structure
+        
         sscanf(details, "%[^,],%[^,],%d", newuser.id, newuser.name, &newuser.age);
 
-        if (custom_strcmp(newuser.id, targetid) != 0) {
-            // If user is not the one to delete, write to the temporary file
+        if (custom_strcmp(newuser.id, targetid) != 0) 
+        {
             fprintf(tempfile, "%s,%s,%d\n", newuser.id, newuser.name, newuser.age);
-        } else {
+        } 
+        else 
+        {
             present = 1;  // Set flag if user is found
         }
     }
@@ -223,13 +224,15 @@ void delete_user() {
     fclose(file);
     fclose(tempfile);
 
-    // If user was deleted, replace the original file with the temporary file
-    if (present) {
+    if (present)
+     {
         remove(FILENAME);
         rename(temp_filename, FILENAME);
         printf("User deleted successfully!\n");
-    } else {
-        // If user wasn't found, remove the temporary file
+    } 
+    else 
+    {
+        
         remove(temp_filename);
         printf("Error: User not found.\n");
     }
@@ -239,7 +242,7 @@ void delete_user() {
 int main() {
     int choice;
 
-    create_file();  // Ensure file exists before performing any operations
+    create_file();  
 
     while (1) {
         // Menu for user to choose an option
@@ -259,7 +262,7 @@ int main() {
             continue;  // Skip the rest of the loop and ask for input again
         }
 
-        // Handle menu choices
+    
         switch (choice) {
             case 1:
                 add_user();
@@ -282,5 +285,5 @@ int main() {
     }
 
     return 0;
+    printf("\n");
 }
-// Intentionally left blank
