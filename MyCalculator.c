@@ -9,7 +9,7 @@
 
 #define MAX_STACK_SIZE 100
 
-// Helper function to calculate string length
+
 int get_string_length(const char *str) {
     int length = 0;
     while (str[length] != '\0') {
@@ -24,7 +24,7 @@ int is_whitespace(char c) {
 }
 
 
-// Helper function to apply an operator
+
 int apply_operator(char operator, int a, int b, int *error) {
     int result=0;
     if (operator == '/' && b == 0) {
@@ -32,25 +32,29 @@ int apply_operator(char operator, int a, int b, int *error) {
         return 0;
     }
     switch (operator) {
-        case '+': result= a + b;break;
-        case '-': result= a - b;break;
-        case '*': result= a * b;break;
-        case '/': result= a / b;break;
+        case '+': result= a + b;
+                  break;
+        case '-': result= a - b;
+                  break;
+        case '*': result= a * b;
+                  break;
+        case '/': result= a / b;
+                  break;
         default:
-            *error = ERROR_UNKNOWN;
-            break;
+                 *error = ERROR_UNKNOWN;
+                  break;
     }
     return result;
 }
 
-// Helper function to check operator precedence
+
 int operator_precedence(char operator) {
     if (operator == '+' || operator == '-') return 1;
     if (operator == '*' || operator == '/') return 2;
     return 0;
 }
 
-// Evaluate the expression
+
 int evaluate_expression(const char *expression, int *error) {
     char operators[MAX_STACK_SIZE];
     int operands[MAX_STACK_SIZE];
@@ -67,7 +71,7 @@ int evaluate_expression(const char *expression, int *error) {
             continue;
         }
 
-        // Process numbers
+        
         if (isdigit(expression[i])) {
             int value = 0;
             while (i < length && isdigit(expression[i])) {
@@ -81,7 +85,7 @@ int evaluate_expression(const char *expression, int *error) {
             }
             operands[++operand_top] = value;
         }
-        // Process operators
+        
         else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/') {
             while (operator_top >= 0 && 
                    operator_precedence(operators[operator_top]) >= operator_precedence(expression[i])) {
@@ -117,10 +121,10 @@ int evaluate_expression(const char *expression, int *error) {
             result = 0;
             break;
         }
-        char op = operators[operator_top--];
+        char operator = operators[operator_top--];
         int b = operands[operand_top--];
         int a = operands[operand_top--];
-        operands[++operand_top] = apply_operator(op, a, b, error);
+        operands[++operand_top] = apply_operator(operator, a, b, error);
         if (*error) {
             result = 0;
             break;
@@ -134,7 +138,6 @@ int evaluate_expression(const char *expression, int *error) {
     return result;
 }
 
-// Main function
 // Main function
 int main() {
     char expression[1000];
@@ -155,13 +158,20 @@ int main() {
         int error = 0;
         int result = evaluate_expression(expression, &error);
 
-        if (error == ERROR_INVALID_EXPRESSION) {
+        if (error == ERROR_INVALID_EXPRESSION) 
+        {
             printf("Error: Invalid expression.\n");
-        } else if (error == ERROR_DIVISION_BY_ZERO) {
+        } 
+        else if (error == ERROR_DIVISION_BY_ZERO) 
+        {
             printf("Error: Division by zero.\n");
-        } else if (error == ERROR_UNKNOWN) {
+        } 
+        else if (error == ERROR_UNKNOWN) 
+        {
             printf("Error: Unknown error.\n");
-        } else {
+        } 
+        else 
+        {
             printf("Result: %d\n", result);
         }
 
@@ -172,5 +182,7 @@ int main() {
     } while (choice == 'y' || choice == 'Y');
 
     printf("Exiting the program. Goodbye!\n");
+    printf("\n");
     return 0;
+
 }
