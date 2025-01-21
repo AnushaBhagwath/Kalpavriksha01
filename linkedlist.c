@@ -21,6 +21,50 @@ Node* createNode(int value) {
     return newNode;
 }
 
+// Insert functions
+void insertAtBeginning(int value) {
+    Node* newNode = createNode(value);
+    newNode->next = head;
+    head = newNode;
+}
+
+void insertAtEnd(int value) {
+    Node* newNode = createNode(value);
+    if (!head) {
+        head = newNode;
+        return;
+    }
+    Node* temp = head;
+    while (temp->next) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+void insertAtPosition(int position, int value) {
+    if (position < 1) {
+        printf("Invalid position\n");
+        return;
+    }
+    if (position == 1) {
+        insertAtBeginning(value);
+        return;
+    }
+    Node* newNode = createNode(value);
+    Node* temp = head;
+    for (int pos = 1; pos < position - 1 && temp; pos++) {
+        temp = temp->next;
+    }
+    if (!temp) {
+        printf("Invalid position\n");
+        free(newNode);
+        return;
+    }
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+
 // Main function
 int main() {
     int n, op, pos, value;
