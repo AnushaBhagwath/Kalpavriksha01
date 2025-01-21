@@ -95,6 +95,58 @@ void updateAtPosition(int position, int newValue) {
     temp->data = newValue;
 }
 
+// Delete functions
+void deleteAtBeginning() {
+    if (!head) {
+        printf("Invalid position\n");
+        return;
+    }
+    Node* temp = head;
+    head = head->next;
+    free(temp);
+}
+
+void deleteAtEnd() {
+    if (!head) {
+        printf("Invalid position\n");
+        return;
+    }
+    if (!head->next) {
+        free(head);
+        head = NULL;
+        return;
+    }
+    Node* temp = head;
+    while (temp->next->next) {
+        temp = temp->next;
+    }
+    free(temp->next);
+    temp->next = NULL;
+}
+
+void deleteAtPosition(int position) {
+    if (position < 1 || !head) {
+        printf("Invalid position\n");
+        return;
+    }
+    if (position == 1) {
+        deleteAtBeginning();
+        return;
+    }
+    Node* temp = head;
+    for (int pos = 1; pos < position - 1 && temp; pos++) {
+        temp = temp->next;
+    }
+    if (!temp || !temp->next) {
+        printf("Invalid position\n");
+        return;
+    }
+    Node* toDelete = temp->next;
+    temp->next = toDelete->next;
+    free(toDelete);
+}
+
+
 // Main function
 int main() {
     int n, op, pos, value;
