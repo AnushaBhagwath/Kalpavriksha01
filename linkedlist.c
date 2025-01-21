@@ -78,6 +78,22 @@ void display() {
     printf("\n");
 }
 
+// Update function
+void updateAtPosition(int position, int newValue) {
+    if (position < 1) {
+        printf("Invalid position\n");
+        return;
+    }
+    Node* temp = head;
+    for (int pos = 1; pos < position && temp; pos++) {
+        temp = temp->next;
+    }
+    if (!temp) {
+        printf("Invalid position\n");
+        return;
+    }
+    temp->data = newValue;
+}
 
 // Main function
 int main() {
