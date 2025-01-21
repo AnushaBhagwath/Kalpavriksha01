@@ -64,6 +64,20 @@ void insertAtPosition(int position, int value) {
     temp->next = newNode;
 }
 
+// Display function
+void display() {
+    if (!head) {
+        printf("\n");
+        return;
+    }
+    Node* temp = head;
+    while (temp) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
 
 // Main function
 int main() {
