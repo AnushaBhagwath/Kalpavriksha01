@@ -2,6 +2,24 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* head = NULL;
+
+// Function to create a new node
+Node* createNode(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (!newNode) {
+        printf("Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
 
 // Main function
 int main() {
